@@ -19,7 +19,7 @@ class BookFactory extends Factory
         return [
             'title' => fake()->sentence(random_int(1, 5)),
             'author' => fake()->firstName() . ' ' . fake()->lastName(),
-            'created_at' => fake()->dateTimeBetween('-2 years'),
+            'created_at' => fake()->dateTimeBetween('-3 years', '-2 years'),
             'updated_at' => fake()->dateTimeBetween('-1 year', 'now')
         ];
     }
