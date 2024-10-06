@@ -11,11 +11,27 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('books.index', [
-            'books' => Book::all()
-        ]);
+        $title = $request->input('title');
+        $filter = $request->input('filter', '');
+
+        $books = Book::when(
+            $title,
+            fn($query, $title) => $query->title($title)
+        );
+
+        $books = match ($filter) {
+            'popular_last_month' => $books->popularLastMonth(),
+            'popular_last_6months' => $books->popularLast6Months(),
+            'highest_rated_last_month' => $books->highestRatedLastMonth(),
+            'highest_rated_last_6months' => $books->highestRatedLast6Months(),
+            default => $books->latest()->withAvgRating()->withReviewsCount()
+        };
+
+        $books = $books->get();
+
+        return view('books.index', ['books' => $books]);
     }
 
     /**
