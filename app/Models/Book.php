@@ -29,6 +29,17 @@ class Book extends Model
         'author' => 'string',
     ];
 
+    protected static function booted()
+    {
+        static::updated(
+            fn(Book $book) => cache()->forget('book:' . $book->id)
+        );
+
+        static::deleted(
+            fn(Book $book) => cache()->forget('book:' . $book->id)
+        );
+    }
+
     /**
      * Defines the relationship with Review model.
      *

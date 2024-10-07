@@ -27,6 +27,13 @@ class Review extends Model
         'rating' => 'integer',
     ];
 
+    protected static function booted()
+    {
+        static::updated(fn(Review $review) => cache()->forget('book:' . $review->book_id));
+
+        static::deleted(fn(Review $review) => cache()->forget('book:' . $review->book_id));
+    }
+
     /**
      * Defines the relationship with Book model.
      *
@@ -35,4 +42,6 @@ class Review extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
+
 }
